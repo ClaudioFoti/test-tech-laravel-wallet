@@ -7,7 +7,10 @@ namespace App\Http\Controllers;
 use App\Actions\PerformWalletTransfer;
 use App\Events\LowBalance;
 use App\Exceptions\InsufficientBalance;
+use App\Http\Requests\RecurringTransferRequest;
 use App\Http\Requests\SendMoneyRequest;
+use App\Jobs\RecurringTransfer;
+use Illuminate\Support\Facades\Schedule;
 use Illuminate\Support\Number;
 
 class SendMoneyController
@@ -35,5 +38,12 @@ class SendMoneyController
                 ->with('money-sent-recipient-name', $recipient->name)
                 ->with('money-sent-amount', $request->getAmountInCents());
         }
+    }
+
+    public function recurring(RecurringTransferRequest $request, PerformWalletTransfer $performWalletTransfer)
+    {
+        $recurringTransferJob = new RecurringTransfer($request, $performWalletTransfer);
+        dd($recurringTransferJob);
+        Schedule::job(new RecurringTransfer($request, $performWalletTransfer))->dailyAt('2:00');
     }
 }
