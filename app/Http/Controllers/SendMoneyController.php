@@ -5,8 +5,10 @@ declare(strict_types=1);
 namespace App\Http\Controllers;
 
 use App\Actions\PerformWalletTransfer;
+use App\Events\LowBalance;
 use App\Exceptions\InsufficientBalance;
 use App\Http\Requests\SendMoneyRequest;
+use Illuminate\Support\Number;
 
 class SendMoneyController
 {
@@ -21,6 +23,8 @@ class SendMoneyController
                 amount: $request->getAmountInCents(),
                 reason: $request->input('reason'),
             );
+
+            LowBalance::dispatchIf(Number::currencyCents(auth()->user()->wallet->balance < 10), auth()->user());
 
             return redirect()->back()
                 ->with('money-sent-status', 'success')

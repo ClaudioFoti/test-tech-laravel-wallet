@@ -8,6 +8,8 @@ use App\Exceptions\InsufficientBalance;
 use App\Models\User;
 use App\Models\Wallet;
 
+use Illuminate\Support\Facades\Event;
+use Illuminate\Support\Facades\Mail;
 use function Pest\Laravel\assertDatabaseCount;
 use function Pest\Laravel\assertDatabaseHas;
 
