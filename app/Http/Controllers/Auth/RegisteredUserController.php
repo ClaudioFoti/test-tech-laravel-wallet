@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Http\Controllers\Auth;
 
 use App\Models\User;
+use App\Models\Wallet;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -32,6 +33,10 @@ class RegisteredUserController
             'name' => $request->name,
             'email' => strtolower($request->email),
             'password' => Hash::make($request->password),
+        ]);
+
+        Wallet::create([
+            'user_id' => $user->id,
         ]);
 
         event(new Registered($user));
